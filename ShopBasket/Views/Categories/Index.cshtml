@@ -1,0 +1,46 @@
+﻿@using PagedList.Mvc
+@model ShopBasket.ViewModel.CategoryIndexViewModel
+
+@{
+    ViewBag.Title = "Category";
+}
+
+<h2>@ViewBag.Title</h2>
+
+@if (Request.IsAuthenticated && User.IsInRole("Admin"))
+{
+    <p>
+        @Html.ActionLink("Create New", "Create")
+    </p>
+}
+<table class="table">
+    <tr>
+        <th>
+            @Html.DisplayNameFor(model => model.Categories)
+        </th>
+        <th></th>
+    </tr>
+
+    @foreach (var item in Model.Categories)
+    {
+        <tr>
+            <td>
+                @Html.ActionLink(item.Name, "Index", "Products", new { category = item.Name }, null)
+            </td>
+            <td>
+                @if (Request.IsAuthenticated && User.IsInRole("Admin"))
+                {
+                    @Html.ActionLink("Edit", "Edit", new { id = item.ID })
+                    @Html.Raw(" | ")
+                    @Html.ActionLink("Delete", "Delete", new { id = item.ID })
+                }
+
+            </td>
+        </tr>
+    }
+
+</table>
+<div>
+    Page @(Model.Categories.PageCount < Model.Categories.PageNumber ? 0 : Model.Categories.PageNumber) of @Model.Categories.PageCount
+    @Html.PagedListPager(Model.Categories, page => Url.Action("Index", new { category = @Model.Categories, page }))
+</div>
